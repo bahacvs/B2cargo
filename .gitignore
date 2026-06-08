@@ -1,0 +1,27 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.eggs/
+build/
+dist/
+
+# Sanal ortam
+.venv/
+venv/
+env/
+
+# Ortam / sırlar
+.env
+.env.local
+
+# Test / kapsama
+.pytest_cache/
+.coverage
+htmlcov/
+coverage.xml
+
+# Editör / OS
+.vscode/
+.idea/
+.DS_Store

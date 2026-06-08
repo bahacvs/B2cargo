@@ -1,0 +1,100 @@
+# B2 Cargo — 11 depo. Yeni depo eklemek = buraya bir blok eklemek.
+# Hiçbir Python dosyası değişmez (11 ajan = 1 kod kuralı).
+#
+# Her depo: id, name, city, timezone ve zon (bölge) listesi.
+# zone_id'ler StockItem.zone_id ve DepotZoneTemperature.zone_id ile eşleşir.
+
+depots:
+  - id: istanbul
+    name: İstanbul Ana Depo
+    city: İstanbul
+    timezone: Europe/Istanbul
+    zones:
+      - { id: frozen, name: Donuk Bölge }
+      - { id: cold, name: Soğuk Bölge }
+      - { id: ambient, name: Kuru Bölge }
+
+  - id: ankara
+    name: Ankara Depo
+    city: Ankara
+    timezone: Europe/Istanbul
+    zones:
+      - { id: frozen, name: Donuk Bölge }
+      - { id: cold, name: Soğuk Bölge }
+      - { id: ambient, name: Kuru Bölge }
+
+  - id: izmir
+    name: İzmir Depo
+    city: İzmir
+    timezone: Europe/Istanbul
+    zones:
+      - { id: frozen, name: Donuk Bölge }
+      - { id: cold, name: Soğuk Bölge }
+      - { id: ambient, name: Kuru Bölge }
+
+  - id: bursa
+    name: Bursa Depo
+    city: Bursa
+    timezone: Europe/Istanbul
+    zones:
+      - { id: cold, name: Soğuk Bölge }
+      - { id: ambient, name: Kuru Bölge }
+
+  - id: antalya
+    name: Antalya Depo
+    city: Antalya
+    timezone: Europe/Istanbul
+    zones:
+      - { id: frozen, name: Donuk Bölge }
+      - { id: cold, name: Soğuk Bölge }
+      - { id: ambient, name: Kuru Bölge }
+
+  - id: adana
+    name: Adana Depo
+    city: Adana
+    timezone: Europe/Istanbul
+    zones:
+      - { id: cold, name: Soğuk Bölge }
+      - { id: ambient, name: Kuru Bölge }
+
+  - id: konya
+    name: Konya Depo
+    city: Konya
+    timezone: Europe/Istanbul
+    zones:
+      - { id: cold, name: Soğuk Bölge }
+      - { id: ambient, name: Kuru Bölge }
+
+  - id: gaziantep
+    name: Gaziantep Depo
+    city: Gaziantep
+    timezone: Europe/Istanbul
+    zones:
+      - { id: frozen, name: Donuk Bölge }
+      - { id: cold, name: Soğuk Bölge }
+      - { id: ambient, name: Kuru Bölge }
+
+  - id: kayseri
+    name: Kayseri Depo
+    city: Kayseri
+    timezone: Europe/Istanbul
+    zones:
+      - { id: cold, name: Soğuk Bölge }
+      - { id: ambient, name: Kuru Bölge }
+
+  - id: samsun
+    name: Samsun Depo
+    city: Samsun
+    timezone: Europe/Istanbul
+    zones:
+      - { id: cold, name: Soğuk Bölge }
+      - { id: ambient, name: Kuru Bölge }
+
+  - id: trabzon
+    name: Trabzon Depo
+    city: Trabzon
+    timezone: Europe/Istanbul
+    zones:
+      - { id: frozen, name: Donuk Bölge }
+      - { id: cold, name: Soğuk Bölge }
+      - { id: ambient, name: Kuru Bölge }

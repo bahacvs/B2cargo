@@ -1,0 +1,17 @@
+{
+  "_comment": "NotificationBuilder kuralları (adım 9). Hangi risk seviyesi hangi kanala, hangi şablonla gider. Şu an şablon; builder stub.",
+  "channels": {
+    "CRITICAL": ["whatsapp", "email", "dashboard"],
+    "HIGH": ["email", "dashboard"],
+    "MEDIUM": ["dashboard"],
+    "LOW": []
+  },
+  "throttle": {
+    "per_depot_minutes": 30,
+    "max_per_run": 50
+  },
+  "templates": {
+    "critical_temp": "KRİTİK: {depot_name} - {item_name} sıcaklık sapması ({measured_c}°C).",
+    "daily_summary": "Günlük rapor: {depot_name} - {critical_count} kritik, {high_count} yüksek risk."
+  }
+}

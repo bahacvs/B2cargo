@@ -1,0 +1,19 @@
+# Geliştirme altyapısı: PostgreSQL + pgvector.
+# Uygulama servisi (api/scheduler) sonraki adımlarda eklenecek.
+version: "3.9"
+
+services:
+  db:
+    image: pgvector/pgvector:pg16
+    environment:
+      POSTGRES_USER: axiom
+      POSTGRES_PASSWORD: axiom
+      POSTGRES_DB: axiom
+    ports:
+      - "5432:5432"
+    volumes:
+      - axiom_db:/var/lib/postgresql/data
+      - ./db/schema.sql:/docker-entrypoint-initdb.d/01_schema.sql:ro
+
+volumes:
+  axiom_db:

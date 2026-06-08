@@ -1,0 +1,60 @@
+[
+  {
+    "item_id": "ank-frozen-001",
+    "sku": "DET-500",
+    "name": "Dondurulmuş Et",
+    "category": "frozen",
+    "quantity": 120,
+    "unit": "kg",
+    "temp_min_c": -18,
+    "temp_max_c": -15,
+    "depot_id": "ankara",
+    "zone_id": "frozen",
+    "expiry_date": "2026-12-01"
+  },
+  {
+    "item_id": "ank-cold-001",
+    "sku": "SUT-1L",
+    "name": "Süt",
+    "category": "dairy",
+    "quantity": 60,
+    "unit": "lt",
+    "temp_min_c": 2,
+    "temp_max_c": 8,
+    "depot_id": "ankara",
+    "zone_id": "cold"
+  },
+  {
+    "item_id": "ank-cold-002",
+    "sku": "YOG-500",
+    "name": "Yoğurt",
+    "category": "dairy",
+    "quantity": 40,
+    "unit": "kg",
+    "temp_min_c": 2,
+    "temp_max_c": 8,
+    "depot_id": "ankara",
+    "zone_id": "cold",
+    "expiry_date": "2026-06-10"
+  },
+  {
+    "item_id": "ank-amb-001",
+    "sku": "PIR-5KG",
+    "name": "Pirinç",
+    "category": "dry",
+    "quantity": 300,
+    "unit": "kg",
+    "depot_id": "ankara",
+    "zone_id": "ambient"
+  },
+  {
+    "item_id": "ank-amb-002",
+    "sku": "SEK-1KG",
+    "name": "Şeker",
+    "category": "dry",
+    "quantity": 3,
+    "unit": "kg",
+    "depot_id": "ankara",
+    "zone_id": "ambient"
+  }
+]

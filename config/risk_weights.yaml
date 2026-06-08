@@ -1,0 +1,44 @@
+# Deterministik risk skorlama — eşikler ve ağırlıklar.
+# Bu dosya değişir, KOD DEĞİŞMEZ. StockRiskAgent buradan okur.
+#
+# Skor → seviye:  75+ KRİTİK / 45-74 YÜKSEK / 25-44 ORTA / 0-24 DÜŞÜK
+
+thresholds:
+  critical: 75
+  high: 45
+  medium: 25
+
+reasons:
+  # Sıcaklık sapmaları: puan = min(base + per_degree * sapma_°C, max)
+  temp_deviation_depot:
+    base: 45
+    per_degree: 10
+    max: 100
+    description: Depo zon sıcaklığı izin verilen aralık dışında
+
+  temp_deviation_vehicle:
+    base: 40
+    per_degree: 6
+    max: 70
+    description: Araç içi sıcaklık izin verilen aralık dışında
+
+  # Son kullanma
+  expiry_passed:
+    points: 80
+    description: Son kullanma tarihi geçmiş
+
+  expiry_imminent:
+    points: 30
+    within_days: 3
+    description: Son kullanma tarihi yaklaşıyor
+
+  # Sevkiyat gecikmesi
+  shipment_delay:
+    points: 25
+    description: Sevkiyat gecikmesi tespit edildi
+
+  # Düşük stok
+  low_stock:
+    points: 15
+    min_quantity: 5
+    description: Stok seviyesi kritik eşiğin altında

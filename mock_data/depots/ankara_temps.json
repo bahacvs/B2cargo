@@ -1,0 +1,5 @@
+[
+  { "depot_id": "ankara", "zone_id": "frozen", "temp_c": -10 },
+  { "depot_id": "ankara", "zone_id": "cold", "temp_c": 5 },
+  { "depot_id": "ankara", "zone_id": "ambient", "temp_c": 22 }
+]
