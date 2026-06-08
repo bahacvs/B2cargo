@@ -1,4 +1,4 @@
-"""ArventoApiAdapter — gerçek (prod) implementasyon, STUB (adım 14)."""
+"""ArventoApiAdapter — gerçek (prod) implementasyon. Adım 14."""
 
 from __future__ import annotations
 
@@ -12,8 +12,13 @@ class ArventoApiAdapter(ArventoAdapter):
         self._client = client or ArventoClient()
 
     def fetch_vehicle_temps(self, depot_id: str) -> list[VehicleTemperatureReading]:
-        # TODO(adım 14): client çıktısını VehicleTemperatureReading'e map et.
-        raise NotImplementedError(
-            "Arvento gerçek adapter henüz uygulanmadı (adım 14). "
-            "Geliştirmede MockArventoAdapter kullanın."
-        )
+        rows = self._client.get_vehicle_temps(depot_id)
+        result = []
+        for row in rows:
+            data = {"vehicle_id": row["vehicle_id"], "temp_c": row["temp_c"]}
+            if row.get("shipment_id"):
+                data["shipment_id"] = row["shipment_id"]
+            if row.get("measured_at"):
+                data["measured_at"] = row["measured_at"]
+            result.append(VehicleTemperatureReading(**data))
+        return result

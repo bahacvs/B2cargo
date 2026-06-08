@@ -1,15 +1,17 @@
-# Deterministik çekirdek (adım 1-6) — şu an gerekli
+# Deterministik çekirdek (adım 1-6)
 pydantic>=2.6
 pyyaml>=6.0
 python-dotenv>=1.0
 pytest>=8.0
 pytest-cov>=4.1
 
-# Sonraki adımlar (7+) açıldıkça aktif edilecek:
-# anthropic>=0.40          # ExplanationAgent / ActionAgent (Claude API)
-# fastapi>=0.110           # API endpoints (adım 13)
-# uvicorn[standard]>=0.29  # ASGI server
-# apscheduler>=3.10        # 07:00 cron (adım 12)
-# httpx>=0.27              # gerçek adapter HTTP client (adım 14)
-# psycopg[binary]>=3.1     # PostgreSQL bağlantısı
-# pgvector>=0.2            # vektör kolonları
+# Ajanlar + API + scheduler (adım 7-14)
+anthropic>=0.40          # ExplanationAgent / ActionAgent / MetaAgent (Claude API)
+fastapi>=0.110           # API endpoints (adım 13)
+uvicorn[standard]>=0.29  # ASGI server
+httpx>=0.27              # gerçek adapter HTTP client (adım 14) + FastAPI TestClient
+apscheduler>=3.10        # 07:00 cron (adım 12)
+
+# Veritabanı persist katmanı (sonraki adım — henüz stub):
+# psycopg[binary]>=3.1
+# pgvector>=0.2

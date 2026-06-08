@@ -1,12 +1,16 @@
-"""Health endpoint mantığı — framework'ten bağımsız, şimdiden çalışır.
+"""Health endpoint. Adım 13.
 
-API katmanı (adım 13) bunu bir route'a bağlayacak. Saf fonksiyon olduğu için
-deterministik çekirdekte test edilebilir.
+`health_status()` framework'ten bağımsız saf fonksiyon (deterministik çekirdekte
+test edilir); `router` FastAPI'ye bağlar.
 """
 
 from __future__ import annotations
 
 import os
+
+from fastapi import APIRouter
+
+router = APIRouter(tags=["health"])
 
 
 def health_status() -> dict:
@@ -17,3 +21,8 @@ def health_status() -> dict:
         "service": "axiom-logistics-intelligence",
         "use_mock_adapters": os.getenv("USE_MOCK_ADAPTERS", "true"),
     }
+
+
+@router.get("/health")
+def get_health() -> dict:
+    return health_status()

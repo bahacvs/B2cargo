@@ -14,9 +14,15 @@ class DepotRiskReport(BaseModel):
     """Tek bir deponun risk değerlendirme raporu (DepotAgent çıktısı)."""
 
     depot_id: str
+    depot_name: str = ""
     generated_at: datetime = Field(default_factory=datetime.utcnow)
     results: list[RiskResult] = Field(default_factory=list)
     data_quality_alerts: list[DataQualityAlert] = Field(default_factory=list)
+
+    # Alt ajan çıktıları (DepotAgent doldurur; üretilemezse boş kalır).
+    explanation: str = ""
+    actions: list[dict] = Field(default_factory=list)
+    notifications: list[dict] = Field(default_factory=list)
 
     @property
     def critical_count(self) -> int:

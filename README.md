@@ -9,7 +9,7 @@ kalem bazlı risk üreten, Meta-Agent ile Türkiye geneli konsolide rapor sunan
 
 ## Durum
 
-Bu repo **iskelet + deterministik çekirdek** aşamasındadır:
+Geliştirme Sırası 1–14 tamam:
 
 | Adım | Bileşen | Durum |
 |------|---------|-------|
@@ -18,8 +18,33 @@ Bu repo **iskelet + deterministik çekirdek** aşamasındadır:
 | 3 | DB schema (`db/schema.sql`) | ✅ Tamam |
 | 4 | TemperatureMonitorAgent | ✅ Tamam (sıfır AI) |
 | 5 | StockRiskAgent | ✅ Tamam (deterministik) |
-| 6 | Unit testler | ✅ 15+ senaryo |
-| 7+ | Explanation/Action/Notification/Depot/Meta ajanları, scheduler, API, gerçek adapter'lar | 🚧 Stub (TODO) |
+| 6 | Unit testler | ✅ 70+ test |
+| 7 | ExplanationAgent (Claude + template fallback) | ✅ Tamam |
+| 8 | ActionAgent (kural tabanlı + Claude notu) | ✅ Tamam |
+| 9 | NotificationBuilder | ✅ Tamam |
+| 10 | DepotAgent (config-driven birleştirici) | ✅ Tamam |
+| 11 | MetaAgent (Türkiye geneli konsolidasyon) | ✅ Tamam |
+| 12 | APScheduler (07:00 cron) | ✅ Tamam |
+| 13 | FastAPI endpoints | ✅ Tamam |
+| 14 | Gerçek adapter implementasyonları (httpx) | ✅ Tamam |
+| — | DB persist katmanı (`db/connection.py`) | 🚧 Stub |
+
+### API'yi çalıştır
+```bash
+USE_MOCK_ADAPTERS=true uvicorn api.main:app --reload
+# GET /health  GET /reports/turkey  GET /reports/{depot_id}
+# GET /notifications  POST /notifications/alert  {"depot_id":"ankara"}
+```
+
+### Scheduler
+```python
+from orchestration.scheduler import start_scheduler
+start_scheduler()   # her gün 07:00 (Europe/Istanbul) run_daily_pipeline
+```
+
+> **Claude modeli:** ExplanationAgent/ActionAgent/MetaAgent `ANTHROPIC_MODEL`
+> (varsayılan `claude-sonnet-4-6`) ve `ANTHROPIC_API_KEY` kullanır. Anahtar yoksa
+> deterministik Türkçe template'lere düşer — sistem yine çalışır.
 
 ## Hızlı Başlangıç
 
