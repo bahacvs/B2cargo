@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Axiom Logistics Intelligence — Dashboard</title>
+<style>
+  :root {
+    --bg: #0f1419;
+    --panel: #1a2129;
+    --panel-2: #222c36;
+    --border: #2d3a47;
+    --text: #e6edf3;
+    --muted: #8b98a5;
+    --crit: #f8514f;
+    --high: #ff8c42;
+    --med: #f2c94c;
+    --low: #3fb950;
+    --accent: #58a6ff;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.5;
+  }
+  header {
+    padding: 20px 28px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+    background: var(--panel);
+  }
+  header h1 { font-size: 19px; margin: 0; font-weight: 650; }
+  header .sub { color: var(--muted); font-size: 13px; }
+  .controls { display: flex; gap: 10px; align-items: center; }
+  button {
+    background: var(--accent); color: #06101f; border: none;
+    padding: 9px 16px; border-radius: 7px; font-weight: 600; cursor: pointer;
+    font-size: 13px;
+  }
+  button:hover { filter: brightness(1.08); }
+  button:disabled { opacity: .55; cursor: default; }
+  .wrap { padding: 24px 28px; max-width: 1100px; margin: 0 auto; }
+
+  .summary {
+    background: var(--panel); border: 1px solid var(--border);
+    border-radius: 12px; padding: 18px 20px; margin-bottom: 22px;
+  }
+  .summary h2 { margin: 0 0 8px; font-size: 14px; color: var(--muted); font-weight: 600;
+    text-transform: uppercase; letter-spacing: .04em; }
+  .summary p { margin: 0; font-size: 15px; }
+  .kpis { display: flex; gap: 14px; flex-wrap: wrap; margin: 16px 0 22px; }
+  .kpi {
+    flex: 1; min-width: 130px; background: var(--panel); border: 1px solid var(--border);
+    border-radius: 12px; padding: 16px 18px;
+  }
+  .kpi .n { font-size: 28px; font-weight: 700; }
+  .kpi .l { color: var(--muted); font-size: 13px; margin-top: 2px; }
+  .kpi.crit .n { color: var(--crit); }
+  .kpi.high .n { color: var(--high); }
+
+  .depot {
+    background: var(--panel); border: 1px solid var(--border);
+    border-radius: 12px; margin-bottom: 12px; overflow: hidden;
+  }
+  .depot-head {
+    display: flex; align-items: center; gap: 12px; padding: 15px 18px; cursor: pointer;
+    user-select: none;
+  }
+  .depot-head:hover { background: var(--panel-2); }
+  .depot-head .rank {
+    width: 26px; height: 26px; border-radius: 7px; background: var(--panel-2);
+    display: flex; align-items: center; justify-content: center; font-size: 13px;
+    color: var(--muted); font-weight: 700; flex-shrink: 0;
+  }
+  .depot-head .name { font-weight: 600; flex: 1; }
+  .depot-head .caret { color: var(--muted); transition: transform .15s; }
+  .depot.open .caret { transform: rotate(90deg); }
+
+  .badges { display: flex; gap: 6px; flex-wrap: wrap; }
+  .badge {
+    font-size: 12px; font-weight: 700; padding: 3px 9px; border-radius: 20px;
+    color: #06101f;
+  }
+  .badge.crit { background: var(--crit); }
+  .badge.high { background: var(--high); }
+  .badge.med { background: var(--med); }
+  .badge.ok { background: var(--low); }
+  .badge.muted { background: var(--panel-2); color: var(--muted); }
+
+  .depot-body { display: none; padding: 4px 18px 20px; border-top: 1px solid var(--border); }
+  .depot.open .depot-body { display: block; }
+  .depot-body h3 { font-size: 12px; text-transform: uppercase; letter-spacing: .04em;
+    color: var(--muted); margin: 18px 0 8px; }
+  .explanation { background: var(--panel-2); border-radius: 8px; padding: 12px 14px;
+    white-space: pre-wrap; font-size: 14px; }
+
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--border); }
+  th { color: var(--muted); font-weight: 600; font-size: 11px; text-transform: uppercase;
+    letter-spacing: .03em; }
+  td.score { font-variant-numeric: tabular-nums; font-weight: 600; }
+  .lvl { font-weight: 700; }
+  .lvl.CRITICAL { color: var(--crit); }
+  .lvl.HIGH { color: var(--high); }
+  .lvl.MEDIUM { color: var(--med); }
+  .lvl.LOW { color: var(--low); }
+  .reasons { color: var(--muted); font-size: 12px; }
+
+  ul.actions { margin: 6px 0 0; padding-left: 18px; font-size: 13px; }
+  ul.actions li { margin: 2px 0; }
+  .chan { display: inline-block; background: var(--panel-2); border-radius: 5px;
+    padding: 1px 7px; font-size: 11px; margin: 2px 4px 2px 0; color: var(--muted); }
+  .alert { color: var(--high); font-size: 13px; }
+  .empty { color: var(--muted); font-size: 13px; padding: 6px 0; }
+  #status { color: var(--muted); font-size: 13px; }
+  .err { color: var(--crit); }
+</style>
+</head>
+<body>
+<header>
+  <div>
+    <h1>🚚 Axiom Logistics Intelligence</h1>
+    <div class="sub">B2 Cargo — Türkiye Geneli Lojistik Risk Paneli · PROTOTİP (örnek veri)</div>
+  </div>
+  <div class="controls">
+    <span id="status">Yükleniyor…</span>
+    <button id="refresh" onclick="load()">Yenile</button>
+  </div>
+</header>
+
+<div class="wrap">
+  <div class="summary">
+    <h2>Yönetici Özeti</h2>
+    <p id="exec">—</p>
+  </div>
+
+  <div class="kpis">
+    <div class="kpi"><div class="n" id="kpi-depots">–</div><div class="l">Depo</div></div>
+    <div class="kpi crit"><div class="n" id="kpi-crit">–</div><div class="l">Kritik kalem</div></div>
+    <div class="kpi high"><div class="n" id="kpi-high">–</div><div class="l">Yüksek riskli</div></div>
+    <div class="kpi"><div class="n" id="kpi-notif">–</div><div class="l">Bildirim</div></div>
+  </div>
+
+  <div id="depots"></div>
+</div>
+
+<script>window.__EMBEDDED__ = {"generated_at": "2026-06-09T11:00:38.363729", "depot_reports": [{"depot_id": "istanbul", "depot_name": "İstanbul Ana Depo", "generated_at": "2026-06-09T11:00:38.361430", "results": [], "data_quality_alerts": [], "explanation": "İstanbul Ana Depo: 0 kalemin tamamı normal. Kritik, yüksek veya orta riskli kalem yok.", "actions": [], "notifications": []}, {"depot_id": "ankara", "depot_name": "Ankara Depo", "generated_at": "2026-06-09T11:00:38.362152", "results": [{"item_id": "ank-frozen-001", "depot_id": "ankara", "score": 95.0, "level": "CRITICAL", "reasons": [{"code": "temp_deviation_depot", "description": "Depo zon sıcaklığı izin verilen aralık dışında (-10.0°C, sapma 5.0°C)", "weight": 45.0, "points": 95.0}]}, {"item_id": "ank-cold-001", "depot_id": "ankara", "score": 0.0, "level": "LOW", "reasons": []}, {"item_id": "ank-cold-002", "depot_id": "ankara", "score": 30.0, "level": "MEDIUM", "reasons": [{"code": "expiry_imminent", "description": "Son kullanma tarihi yaklaşıyor", "weight": 30.0, "points": 30.0}]}, {"item_id": "ank-amb-001", "depot_id": "ankara", "score": 0.0, "level": "LOW", "reasons": []}, {"item_id": "ank-amb-002", "depot_id": "ankara", "score": 15.0, "level": "LOW", "reasons": [{"code": "low_stock", "description": "Stok seviyesi kritik eşiğin altında", "weight": 15.0, "points": 15.0}]}], "data_quality_alerts": [], "explanation": "Ankara Depo: 5 kalem değerlendirildi — 1 kritik, 0 yüksek, 1 orta risk.\n  - ank-frozen-001 (kritik, skor 95): temp_deviation_depot\n  - ank-cold-002 (orta, skor 30): expiry_imminent", "actions": [{"item_id": "ank-frozen-001", "depot_id": "ankara", "level": "CRITICAL", "priority": 1, "actions": ["Depo zonu soğutma sistemini denetle", "Kalemi uygun sıcaklık zonuna taşı"]}, {"item_id": "ank-cold-002", "depot_id": "ankara", "level": "MEDIUM", "priority": 3, "actions": ["Öncelikli sevkiyat/satış planla"]}], "notifications": [{"depot_id": "ankara", "item_id": "ank-frozen-001", "level": "CRITICAL", "channel": "whatsapp", "score": 95.0, "reasons": ["temp_deviation_depot"], "status": "pending"}, {"depot_id": "ankara", "item_id": "ank-frozen-001", "level": "CRITICAL", "channel": "email", "score": 95.0, "reasons": ["temp_deviation_depot"], "status": "pending"}, {"depot_id": "ankara", "item_id": "ank-frozen-001", "level": "CRITICAL", "channel": "dashboard", "score": 95.0, "reasons": ["temp_deviation_depot"], "status": "pending"}, {"depot_id": "ankara", "item_id": "ank-cold-002", "level": "MEDIUM", "channel": "dashboard", "score": 30.0, "reasons": ["expiry_imminent"], "status": "pending"}]}, {"depot_id": "izmir", "depot_name": "İzmir Depo", "generated_at": "2026-06-09T11:00:38.362411", "results": [], "data_quality_alerts": [], "explanation": "İzmir Depo: 0 kalemin tamamı normal. Kritik, yüksek veya orta riskli kalem yok.", "actions": [], "notifications": []}, {"depot_id": "bursa", "depot_name": "Bursa Depo", "generated_at": "2026-06-09T11:00:38.362554", "results": [], "data_quality_alerts": [], "explanation": "Bursa Depo: 0 kalemin tamamı normal. Kritik, yüksek veya orta riskli kalem yok.", "actions": [], "notifications": []}, {"depot_id": "antalya", "depot_name": "Antalya Depo", "generated_at": "2026-06-09T11:00:38.362752", "results": [], "data_quality_alerts": [], "explanation": "Antalya Depo: 0 kalemin tamamı normal. Kritik, yüksek veya orta riskli kalem yok.", "actions": [], "notifications": []}, {"depot_id": "adana", "depot_name": "Adana Depo", "generated_at": "2026-06-09T11:00:38.362874", "results": [], "data_quality_alerts": [], "explanation": "Adana Depo: 0 kalemin tamamı normal. Kritik, yüksek veya orta riskli kalem yok.", "actions": [], "notifications": []}, {"depot_id": "konya", "depot_name": "Konya Depo", "generated_at": "2026-06-09T11:00:38.362991", "results": [], "data_quality_alerts": [], "explanation": "Konya Depo: 0 kalemin tamamı normal. Kritik, yüksek veya orta riskli kalem yok.", "actions": [], "notifications": []}, {"depot_id": "gaziantep", "depot_name": "Gaziantep Depo", "generated_at": "2026-06-09T11:00:38.363114", "results": [], "data_quality_alerts": [], "explanation": "Gaziantep Depo: 0 kalemin tamamı normal. Kritik, yüksek veya orta riskli kalem yok.", "actions": [], "notifications": []}, {"depot_id": "kayseri", "depot_name": "Kayseri Depo", "generated_at": "2026-06-09T11:00:38.363254", "results": [], "data_quality_alerts": [], "explanation": "Kayseri Depo: 0 kalemin tamamı normal. Kritik, yüksek veya orta riskli kalem yok.", "actions": [], "notifications": []}, {"depot_id": "samsun", "depot_name": "Samsun Depo", "generated_at": "2026-06-09T11:00:38.363388", "results": [], "data_quality_alerts": [], "explanation": "Samsun Depo: 0 kalemin tamamı normal. Kritik, yüksek veya orta riskli kalem yok.", "actions": [], "notifications": []}, {"depot_id": "trabzon", "depot_name": "Trabzon Depo", "generated_at": "2026-06-09T11:00:38.363500", "results": [], "data_quality_alerts": [], "explanation": "Trabzon Depo: 0 kalemin tamamı normal. Kritik, yüksek veya orta riskli kalem yok.", "actions": [], "notifications": []}], "executive_summary": "Türkiye geneli: 11 depo değerlendirildi, toplam 1 kritik kalem. Öncelikli depolar: Ankara Depo (1 kritik), İstanbul Ana Depo (0 kritik), İzmir Depo (0 kritik).", "prioritized_depots": ["ankara", "istanbul", "izmir", "bursa", "antalya", "adana", "konya", "gaziantep", "kayseri", "samsun", "trabzon"]};</script>
+<script>
+const LVL_TR = { CRITICAL: "kritik", HIGH: "yüksek", MEDIUM: "orta", LOW: "düşük" };
+
+function countLevels(results) {
+  const c = { CRITICAL: 0, HIGH: 0, MEDIUM: 0, LOW: 0 };
+  for (const r of results) c[r.level] = (c[r.level] || 0) + 1;
+  return c;
+}
+
+function badges(counts) {
+  const out = [];
+  if (counts.CRITICAL) out.push(`<span class="badge crit">${counts.CRITICAL} kritik</span>`);
+  if (counts.HIGH) out.push(`<span class="badge high">${counts.HIGH} yüksek</span>`);
+  if (counts.MEDIUM) out.push(`<span class="badge med">${counts.MEDIUM} orta</span>`);
+  if (!counts.CRITICAL && !counts.HIGH && !counts.MEDIUM)
+    out.push(`<span class="badge ok">normal</span>`);
+  return out.join("");
+}
+
+function itemsTable(results) {
+  const risky = results
+    .filter(r => r.level !== "LOW")
+    .sort((a, b) => b.score - a.score);
+  if (!risky.length) return `<div class="empty">Riskli kalem yok — tüm kalemler düşük risk.</div>`;
+  const rows = risky.map(r => `
+    <tr>
+      <td>${r.item_id}</td>
+      <td class="lvl ${r.level}">${LVL_TR[r.level]}</td>
+      <td class="score">${r.score.toFixed(0)}</td>
+      <td class="reasons">${r.reasons.map(x => x.code).join(", ") || "—"}</td>
+    </tr>`).join("");
+  return `<table>
+    <thead><tr><th>Kalem</th><th>Seviye</th><th>Skor</th><th>Gerekçe</th></tr></thead>
+    <tbody>${rows}</tbody></table>`;
+}
+
+function actionsBlock(actions) {
+  if (!actions.length) return `<div class="empty">Aksiyon önerisi yok.</div>`;
+  return actions.map(a => `
+    <div style="margin-bottom:8px">
+      <strong>${a.item_id}</strong> <span class="lvl ${a.level}">(${LVL_TR[a.level]})</span>
+      <ul class="actions">${a.actions.map(x => `<li>${x}</li>`).join("")}</ul>
+      ${a.note ? `<div class="reasons">📝 ${a.note}</div>` : ""}
+    </div>`).join("");
+}
+
+function notifBlock(notifs) {
+  if (!notifs.length) return `<div class="empty">Bekleyen bildirim yok.</div>`;
+  return notifs.map(n =>
+    `<div>${n.item_id} — <span class="lvl ${n.level}">${LVL_TR[n.level]}</span>
+     <span class="chan">${n.channel}</span></div>`).join("");
+}
+
+function alertsBlock(alerts) {
+  if (!alerts.length) return "";
+  return `<h3>Veri Kalitesi Uyarıları</h3>` +
+    alerts.map(a => `<div class="alert">⚠ ${a.item_id || "?"}: ${a.message}</div>`).join("");
+}
+
+function depotCard(report, rank) {
+  const counts = countLevels(report.results);
+  const div = document.createElement("div");
+  div.className = "depot";
+  div.innerHTML = `
+    <div class="depot-head">
+      <div class="rank">${rank}</div>
+      <div class="name">${report.depot_name || report.depot_id}</div>
+      <div class="badges">${badges(counts)}</div>
+      <div class="caret">▶</div>
+    </div>
+    <div class="depot-body">
+      <h3>Özet</h3>
+      <div class="explanation">${report.explanation || "—"}</div>
+      <h3>Riskli Kalemler</h3>
+      ${itemsTable(report.results)}
+      <h3>Önerilen Aksiyonlar</h3>
+      ${actionsBlock(report.actions)}
+      <h3>Bildirimler</h3>
+      ${notifBlock(report.notifications)}
+      ${alertsBlock(report.data_quality_alerts)}
+    </div>`;
+  div.querySelector(".depot-head").addEventListener("click", () => div.classList.toggle("open"));
+  return div;
+}
+
+async function load() {
+  const btn = document.getElementById("refresh");
+  const status = document.getElementById("status");
+  btn.disabled = true;
+  status.textContent = "Yükleniyor…";
+  status.className = "";
+  try {
+    const data = window.__EMBEDDED__;
+
+    document.getElementById("exec").textContent = data.executive_summary || "—";
+
+    let crit = 0, high = 0, notif = 0;
+    for (const d of data.depot_reports) {
+      const c = countLevels(d.results);
+      crit += c.CRITICAL; high += c.HIGH; notif += (d.notifications || []).length;
+    }
+    document.getElementById("kpi-depots").textContent = data.depot_reports.length;
+    document.getElementById("kpi-crit").textContent = crit;
+    document.getElementById("kpi-high").textContent = high;
+    document.getElementById("kpi-notif").textContent = notif;
+
+    // Öncelik sırasına göre dizil.
+    const byId = {};
+    for (const d of data.depot_reports) byId[d.depot_id] = d;
+    const ordered = (data.prioritized_depots || []).map(id => byId[id]).filter(Boolean);
+    for (const d of data.depot_reports) if (!data.prioritized_depots.includes(d.depot_id)) ordered.push(d);
+
+    const container = document.getElementById("depots");
+    container.innerHTML = "";
+    ordered.forEach((d, i) => container.appendChild(depotCard(d, i + 1)));
+
+    const ts = new Date().toLocaleTimeString("tr-TR");
+    status.textContent = "Güncellendi: " + ts;
+  } catch (e) {
+    status.textContent = "Hata: " + e.message;
+    status.className = "err";
+  } finally {
+    btn.disabled = false;
+  }
+}
+
+load();
+</script>
+</body>
+</html>
