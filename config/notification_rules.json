@@ -1,8 +1,8 @@
 {
-  "_comment": "NotificationBuilder kuralları (adım 9). Hangi risk seviyesi hangi kanala, hangi şablonla gider. Şu an şablon; builder stub.",
+  "_comment": "Aciliyet (risk seviyesi) → kanal eşlemesi. NotificationBuilder bunu kullanır, delivery katmanı gönderir. Kritik en yüksek aciliyet: WhatsApp + Telegram. Düşük: bildirim yok.",
   "channels": {
-    "CRITICAL": ["whatsapp", "email", "dashboard"],
-    "HIGH": ["email", "dashboard"],
+    "CRITICAL": ["whatsapp", "telegram"],
+    "HIGH": ["telegram"],
     "MEDIUM": ["dashboard"],
     "LOW": []
   },

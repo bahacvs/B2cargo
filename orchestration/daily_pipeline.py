@@ -17,12 +17,12 @@ from __future__ import annotations
 
 import logging
 
-from adapters.base import ArventoAdapter, DevambarAdapter, SensorAdapter
+from adapters.base import ArventoAdapter, SensorAdapter, StockAdapter
 from adapters.errors import AdapterError
 from adapters.factory import (
     get_arvento_adapter,
-    get_devambar_adapter,
     get_sensor_adapter,
+    get_stock_adapter,
 )
 from agents.depot_agent import DepotAgent
 from agents.meta_agent import MetaAgent
@@ -35,12 +35,12 @@ logger = logging.getLogger("axiom.pipeline")
 def run_daily_pipeline(
     depot_ids: list[str] | None = None,
     *,
-    devambar: DevambarAdapter | None = None,
+    stock: StockAdapter | None = None,
     sensor: SensorAdapter | None = None,
     arvento: ArventoAdapter | None = None,
     meta_agent: MetaAgent | None = None,
 ) -> TurkeyWideReport:
-    devambar = devambar or get_devambar_adapter()
+    stock = stock or get_stock_adapter()
     sensor = sensor or get_sensor_adapter()
     arvento = arvento or get_arvento_adapter()
     meta_agent = meta_agent or MetaAgent()
@@ -50,7 +50,7 @@ def run_daily_pipeline(
 
     reports: list[DepotRiskReport] = []
     for depot_id in ids:
-        report = _run_one_depot(depot_id, depots, devambar, sensor, arvento)
+        report = _run_one_depot(depot_id, depots, stock, sensor, arvento)
         if report is not None:
             reports.append(report)
 
@@ -60,15 +60,15 @@ def run_daily_pipeline(
 def _run_one_depot(
     depot_id: str,
     depots: dict[str, dict],
-    devambar: DevambarAdapter,
+    stock: StockAdapter,
     sensor: SensorAdapter,
     arvento: ArventoAdapter,
 ) -> DepotRiskReport | None:
-    # Devambar zorunlu: erişilemezse depo atlanır (diğer depolar devam eder).
+    # Stok kaynağı (Omnia) zorunlu: erişilemezse depo atlanır (diğerleri devam).
     try:
-        snapshot = devambar.fetch_stock(depot_id)
+        snapshot = stock.fetch_stock(depot_id)
     except AdapterError as exc:
-        logger.warning("Devambar erişilemedi, depo atlandı (%s): %s", depot_id, exc)
+        logger.warning("Omnia erişilemedi, depo atlandı (%s): %s", depot_id, exc)
         return None
 
     # Sensor / Arvento opsiyonel: erişilemezse boş geçilir (fallback).

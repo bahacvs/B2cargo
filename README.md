@@ -46,6 +46,15 @@ start_scheduler()   # her gün 07:00 (Europe/Istanbul) run_daily_pipeline
 > (varsayılan `claude-sonnet-4-6`) ve `ANTHROPIC_API_KEY` kullanır. Anahtar yoksa
 > deterministik Türkçe template'lere düşer — sistem yine çalışır.
 
+### Veri kaynağı & bildirim (güncel)
+- **Stok/sevkiyat kaynağı: Omnia** (`STOCK_SOURCE=omnia`, varsayılan). Devambar artık
+  yalnızca veritabanı — erişim sonra netleşecek. `StockAdapter` interface'i ikisini de
+  kapsar; ajanlar/pipeline/dashboard değişmedi.
+- **Bildirim teslimi: aciliyet skoruna göre WhatsApp / Telegram** (`delivery/`).
+  Kritik → WhatsApp+Telegram, Yüksek → Telegram, günlük özet → Telegram.
+  `USE_MOCK_NOTIFIERS=true` (varsayılan) gönderimi simüle eder; gerçek gönderim için
+  `TELEGRAM_*` / `WHATSAPP_*` env değişkenleri.
+
 ## Hızlı Başlangıç
 
 ```bash

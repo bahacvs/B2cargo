@@ -13,12 +13,21 @@ from models.stock import DepotSnapshot
 from models.temperature import DepotZoneTemperature, VehicleTemperatureReading
 
 
-class DevambarAdapter(ABC):
-    """Stok / kalem / sevkiyat verisi (Argem Bilişim — Devambar API)."""
+class StockAdapter(ABC):
+    """Stok / kalem / sevkiyat verisi kaynağı (Omnia veya Devambar).
+
+    B2 Cargo Omnia'ya geçti: stok + sevkiyat verisi Omnia'dan gelir. Devambar
+    artık yalnızca veritabanı (bağlantı sonra netleşecek). İki kaynak da bu
+    interface'i implemente eder; çağıran kod hangisini kullandığını bilmez.
+    """
 
     @abstractmethod
     def fetch_stock(self, depot_id: str) -> DepotSnapshot:
         """Verilen deponun anlık stok görüntüsünü döner."""
+
+
+# Geriye dönük uyum: eski ad StockAdapter'a işaret eder.
+DevambarAdapter = StockAdapter
 
 
 class SensorAdapter(ABC):

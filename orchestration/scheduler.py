@@ -20,10 +20,15 @@ def _run_daily_job() -> None:
 
     try:
         report = run_daily_pipeline()
+        # Aciliyet skoruna göre WhatsApp/Telegram'dan gönder + özeti Telegram'a yolla.
+        from delivery.dispatcher import dispatch_turkey
+
+        sent = dispatch_turkey(report)
         logger.info(
-            "Günlük pipeline tamam: %d depo, öncelik: %s",
+            "Günlük pipeline tamam: %d depo, öncelik: %s, %d bildirim teslim edildi",
             len(report.depot_reports),
             report.prioritized_depots[:3],
+            len(sent),
         )
     except Exception:  # noqa: BLE001 - scheduler thread'i korunur
         logger.exception("Günlük pipeline başarısız")

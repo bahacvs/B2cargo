@@ -1,13 +1,20 @@
-"""Veri kaynağı adapter'ları: Devambar, Sensor, Arvento.
+"""Veri kaynağı adapter'ları.
 
-Her kaynağın bir Mock (geliştirme/test) ve bir gerçek (prod) implementasyonu vardır.
-Seçim `adapters/factory.py` üzerinden `USE_MOCK_ADAPTERS` ile yapılır.
+Stok/sevkiyat kaynağı: Omnia (ana) veya Devambar (DB, sonra netleşecek).
+Sıcaklık: Sensor (depo zonu), Arvento (araç). Her kaynağın Mock + gerçek
+implementasyonu vardır; seçim adapters.factory üzerinden yapılır.
 """
 
-from adapters.base import ArventoAdapter, DevambarAdapter, SensorAdapter
+from adapters.base import (
+    ArventoAdapter,
+    DevambarAdapter,
+    SensorAdapter,
+    StockAdapter,
+)
 from adapters.errors import AdapterError
 
 __all__ = [
+    "StockAdapter",
     "DevambarAdapter",
     "SensorAdapter",
     "ArventoAdapter",

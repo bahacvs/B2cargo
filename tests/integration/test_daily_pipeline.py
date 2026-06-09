@@ -5,7 +5,7 @@ from __future__ import annotations
 import pytest
 
 from adapters.arvento.mock import MockArventoAdapter
-from adapters.devambar.mock import MockDevambarAdapter
+from adapters.omnia.mock import MockOmniaAdapter
 from adapters.sensor.mock import MockSensorAdapter
 from config import all_depot_ids
 from models.risk import RiskLevel
@@ -18,8 +18,9 @@ def _no_api_key(monkeypatch):
 
 
 def _adapters(devambar_fail=None, sensor_fail=None):
+    # Stok kaynağı artık Omnia (mock).
     return dict(
-        devambar=MockDevambarAdapter(fail_depots=devambar_fail),
+        stock=MockOmniaAdapter(fail_depots=devambar_fail),
         sensor=MockSensorAdapter(fail_depots=sensor_fail),
         arvento=MockArventoAdapter(),
     )

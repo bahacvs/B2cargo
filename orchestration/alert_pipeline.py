@@ -13,24 +13,31 @@ from __future__ import annotations
 
 from adapters.factory import (
     get_arvento_adapter,
-    get_devambar_adapter,
     get_sensor_adapter,
+    get_stock_adapter,
 )
+from delivery.dispatcher import dispatch_report
 from orchestration.daily_pipeline import _run_one_depot
 from config import load_depots
 
 
-def run_alert_pipeline(event: dict) -> list[dict]:
-    """`event["depot_id"]` deposunu değerlendirip bildirim payload'ları döner."""
+def run_alert_pipeline(event: dict, *, send: bool = True) -> list[dict]:
+    """`event["depot_id"]` deposunu değerlendirir; bildirimleri teslim eder ve döner.
+
+    `send=True` ise aciliyet skoruna göre WhatsApp/Telegram'dan gönderilir
+    (delivery.dispatch_report). `send=False` ile sadece payload üretilir (test).
+    """
 
     depot_id = event["depot_id"]
     report = _run_one_depot(
         depot_id,
         load_depots(),
-        get_devambar_adapter(),
+        get_stock_adapter(),
         get_sensor_adapter(),
         get_arvento_adapter(),
     )
     if report is None:
         return []
+    if send:
+        dispatch_report(report)
     return report.notifications

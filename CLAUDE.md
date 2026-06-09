@@ -10,13 +10,20 @@ Bu sistem Axiom'un kurumsal SaaS ürünüdür. B2 Cargo pilot müşteri.
 
 ---
 
-## Üç Veri Kaynağı — Üç Adapter
+## Veri Kaynakları — Adapter'lar
 
 ```
-Devambar API   → stok, kalem, sevkiyat verisi (Argem Bilişim)
+Omnia API      → stok, kalem, sevkiyat verisi (ANA kaynak — B2 Cargo Omnia'ya geçti)
 Sensor API     → depo bölge sıcaklıkları (ayrı sistem, API var)
 Arvento API    → araç anlık konum + araç içi sıcaklık
+Devambar       → ARTIK sadece veritabanı (yönetim Omnia'da). Erişim sonra netleşecek.
 ```
+
+**Stok kaynağı geçişi:** Yönetim tarafı yalnızca Omnia kullanacak; stok + sevkiyat
+verisi Omnia'dan gelir. Devambar bir veritabanı olarak kalır (doğrudan DB mi, API mi
+olduğu sonra netleşecek). `StockAdapter` interface'i her ikisini de kapsar; kaynak
+`STOCK_SOURCE` env (varsayılan `omnia`) ile seçilir. Adapter interface'i değişmedi —
+ajanlar/pipeline/dashboard hiç etkilenmedi.
 
 **Kritik kural:** Her adapter'ın bir Mock versiyonu var.
 Gerçek API bağlantısı olmadan geliştirme durmamalı.
@@ -83,7 +90,10 @@ DepotAgent (11 instance, aynı kod)
   ├── StockRiskAgent            → kalem bazlı risk skoru
   ├── ExplanationAgent          → Claude API, Türkçe özet
   ├── ActionAgent               → kural tabanlı + Claude API
-  └── NotificationBuilder       → payload üretimi, göndermez
+  └── NotificationBuilder       → payload üretimi (kanal = aciliyet skoru)
+
+Teslim (delivery/)            → payload'ı GÖNDERİR: WhatsApp / Telegram
+                                Kritik → WhatsApp+Telegram, Yüksek → Telegram
 
 MetaAgent
   → 11 depo raporunu birleştirir
